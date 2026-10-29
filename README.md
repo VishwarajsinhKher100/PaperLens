@@ -12,20 +12,22 @@
 - 📏 **Adjustable Length:** Customize the length of the explanation.
 - 💻 **Mathematical Insights & Analogies:** Get intuitive code snippets and relatable analogies for complex concepts.
 - ⚡ **Modern Split Architecture:** Built with a high-performance FastAPI backend and a responsive React + Tailwind CSS frontend.
+- 🐳 **Containerized Deployment:** Fully dockerized setup using Docker Compose for seamless deployment.
 
 ---
 
 ## 🛠️ Tech Stack
 
-- **Backend:** Python, FastAPI, LangChain, LangChain-Groq, Pydantic, Uvicorn
-- **Frontend:** React (Vite), Tailwind CSS
+- **Backend:** Python, FastAPI, `uv`, LangChain, LangChain-Groq, Pydantic, Uvicorn
+- **Frontend:** React (Vite), Tailwind CSS, Nginx
+- **Containerization:** Docker, Docker Compose
 - **AI Model:** Groq API (`openai/gpt-oss-120b` via `ChatGroq`)
 
 ---
 
 ## ⚙️ Environment Variables
 
-Create a `.env` file in your root backend directory and add your Groq API key:
+Create a `.env` file in the **root directory** of the project and add your Groq API key:
 
 ```env
 # AI Provider API Keys
@@ -34,9 +36,9 @@ GROQ_API_KEY=your_groq_api_key_here
 
 ---
 
-## 🚀 Installation & Quick Start
+## 🐳 Running with Docker (Recommended)
 
-Follow these steps to set up and run the project locally.
+The easiest way to run the entire application (both Frontend and Backend) is using Docker Compose.
 
 ### 1️⃣ Clone the Repository
 
@@ -45,15 +47,43 @@ git clone https://github.com/your-username/research-paper-summarizer.git
 cd research-paper-summarizer
 ```
 
-### 2️⃣ Install Dependencies
+### 2️⃣ Build and Run Containers
 
 ```bash
-pip install -r requirements.txt
+docker compose up --build -d
 ```
 
-### 3️⃣ Run the Application
+### 3️⃣ Access the Application
+
+- **Frontend Application:** [http://localhost](http://localhost)
+- **Backend API & Swagger Docs:** [http://localhost:8000/docs](http://localhost:8000/docs)
+
+### 4️⃣ Stop the Application
 
 ```bash
-uvicorn src.backend.app.main:app --reload
+docker compose down
+```
+
+---
+
+## 💻 Local Development Setup
+
+If you prefer running the backend and frontend separately without Docker:
+
+### Backend Setup (`uv`)
+
+```bash
+cd backend
+uv sync
+uv run uvicorn src.backend.app.main:app --reload --port 8000
+```
+
+### Frontend Setup (Vite / React)
+
+```bash
+cd frontend
+npm install
 npm run dev
 ```
+
+- **Frontend Dev Server:** [http://localhost:5173](http://localhost:5173)
