@@ -1,6 +1,6 @@
-# 📚 Research Paper Explainer
+# 📚 PaperLens – AI-Powered Research Paper Explainer
 
-> An AI-powered web application that generates concise, meaningful explanations and architectural breakdowns of research papers — tailored by paper title, technical depth, explanation style, and reading goal.
+> PaperLens is an AI-powered web application that generates concise, meaningful explanations and architectural breakdowns of research papers — tailored by paper title, technical depth, explanation style, and reading goal.
 
 ---
 
