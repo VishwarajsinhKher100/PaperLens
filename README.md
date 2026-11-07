@@ -87,3 +87,14 @@ npm run dev
 ```
 
 - **Frontend Dev Server:** [http://localhost:5173](http://localhost:5173)
+
+---
+
+## 🔮 Future Improvements
+
+- 📄 **PDF Upload & Parsing:** Support direct PDF file uploads to process user-provided papers and pre-prints directly.
+- 🧠 **RAG Integration (Retrieval-Augmented Generation):** Implement vector store embeddings (e.g., ChromaDB, Qdrant) to enable deep Q&A over whole research papers.
+- 📊 **LaTeX Math Rendering:** Add KaTeX or MathJax rendering on the frontend for crisp, readable math formulas.
+- 📜 **Export Capabilities:** Export generated summaries and breakdowns directly as PDF or Markdown files.
+- 🔍 **ArXiv & Semantic Scholar API Integration:** Automatically fetch paper metadata, citations, abstracts, and authors via direct API connections.
+- 🔐 **User Authentication & Saved History:** Allow users to save past paper explanations and bookmark key insights.
