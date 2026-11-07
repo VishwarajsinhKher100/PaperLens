@@ -11,6 +11,7 @@
 - 🎯 **Reading Goals:** Select custom goals like Quick Summaries, Literature Reviews, or Architecture Breakdowns.
 - 📏 **Adjustable Length:** Customize the length of the explanation.
 - 💻 **Mathematical Insights & Analogies:** Get intuitive code snippets and relatable analogies for complex concepts.
+- 🛡️ **Hardened Security & Rate Limiting:** Proxy-aware IP rate limiting (`SlowAPI`), strict Pydantic input bounds, prompt injection defenses, and sanitized internal error logging.
 - ⚡ **Modern Split Architecture:** Built with a high-performance FastAPI backend and a responsive React + Custom CSS frontend.
 - 🐳 **Containerized Deployment:** Fully dockerized setup using Docker Compose for seamless deployment.
 
@@ -18,8 +19,8 @@
 
 ## 🛠️ Tech Stack
 
-- **Backend:** Python, FastAPI, `uv`, LangChain, LangChain-Groq, Pydantic, Uvicorn
-- **Frontend:** React (Vite), Pure CSS, Nginx
+- **Backend:** Python, FastAPI, `uv`, LangChain, LangChain-Groq, Pydantic, SlowAPI, Uvicorn
+- **Frontend:** React (Vite), Tailwind / Pure CSS, Nginx
 - **Containerization:** Docker, Docker Compose
 - **AI Model:** Groq API (`openai/gpt-oss-120b` via `ChatGroq`)
 
@@ -27,11 +28,19 @@
 
 ## ⚙️ Environment Variables
 
+### Root Directory (`.env`)
 Create a `.env` file in the **root directory** of the project and add your Groq API key:
 
 ```env
 # AI Provider API Keys
 GROQ_API_KEY=your_groq_api_key_here
+```
+
+### Frontend Directory (`frontend/.env`)
+To configure dynamic API URL parameters for Vite:
+
+```env
+VITE_API_URL=http://localhost:8000
 ```
 
 ---
@@ -75,6 +84,8 @@ If you prefer running the backend and frontend separately without Docker:
 ```bash
 cd backend
 uv sync
+# Install security and rate limiting package if not present
+uv pip install slowapi
 uv run uvicorn src.backend.app.main:app --reload --port 8000
 ```
 
@@ -87,6 +98,16 @@ npm run dev
 ```
 
 - **Frontend Dev Server:** [http://localhost:5173](http://localhost:5173)
+
+---
+
+## 🔒 Security Measures Applied
+
+- **CORS Restricted:** Explicit origin whitelisting (`http://localhost:5173`) replacing wildcards.
+- **Prompt Injection Defense:** Input isolation using structured `ChatPromptTemplate` with separate system and user roles.
+- **Input Bounds:** Pydantic `Field(max_length=...)` validation on payload strings.
+- **Rate Limiting:** IP-based limit (5 req/min) reading `X-Forwarded-For` for reverse-proxy compatibility.
+- **Sanitized Errors:** Internal exception logging while returning generic status codes to prevent data leaks.
 
 ---
 
