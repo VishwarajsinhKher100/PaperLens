@@ -11,7 +11,7 @@
 - 🎯 **Reading Goals:** Select custom goals like Quick Summaries, Literature Reviews, or Architecture Breakdowns.
 - 📏 **Adjustable Length:** Customize the length of the explanation.
 - 💻 **Mathematical Insights & Analogies:** Get intuitive code snippets and relatable analogies for complex concepts.
-- ⚡ **Modern Split Architecture:** Built with a high-performance FastAPI backend and a responsive React + Tailwind CSS frontend.
+- ⚡ **Modern Split Architecture:** Built with a high-performance FastAPI backend and a responsive React + Custom CSS frontend.
 - 🐳 **Containerized Deployment:** Fully dockerized setup using Docker Compose for seamless deployment.
 
 ---
@@ -19,7 +19,7 @@
 ## 🛠️ Tech Stack
 
 - **Backend:** Python, FastAPI, `uv`, LangChain, LangChain-Groq, Pydantic, Uvicorn
-- **Frontend:** React (Vite), Tailwind CSS, Nginx
+- **Frontend:** React (Vite), Pure CSS, Nginx
 - **Containerization:** Docker, Docker Compose
 - **AI Model:** Groq API (`openai/gpt-oss-120b` via `ChatGroq`)
 
