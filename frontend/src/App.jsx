@@ -1,253 +1,184 @@
 import React, { useState } from "react";
 import "./App.css";
 
-// Dynamic API URL from Vite environment variable
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+export default function App() {
+  const [formData, setFormData] = useState({
+    paper_name: "",
+    tech_depth: "Beginner (Simple terms & analogies)",
+    reading_goal: "Quick Summary",
+    length: "Medium (Balanced overview)",
+  });
 
-function App() {
-  const [paperName, setPaperName] = useState("");
-  const [techDepth, setTechDepth] = useState("Beginner");
-  const [readingGoal, setReadingGoal] = useState("Quick Summary");
-  const [length, setLength] = useState("Medium");
-
-  const [explanation, setExplanation] = useState("");
   const [loading, setLoading] = useState(false);
+  const [explanation, setExplanation] = useState("");
   const [error, setError] = useState("");
-  const [copied, setCopied] = useState(false);
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError("");
     setExplanation("");
-    setCopied(false);
 
     try {
-      const response = await fetch(`${API_URL}/explain-paper`, {
+      const response = await fetch("http://127.0.0.1:8000/explain-paper", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          paper_name: paperName,
-          tech_depth: techDepth,
-          reading_goal: readingGoal,
-          length: length,
-        }),
+        body: JSON.stringify(formData),
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
         throw new Error(
-          errorData.detail || `Server error: ${response.statusText}`,
+          data.detail || "Failed to fetch explanation from server.",
         );
       }
 
-      const data = await response.json();
       setExplanation(data.explanation);
     } catch (err) {
-      setError(
-        err.message ||
-          "Failed to connect to the backend. Make sure FastAPI is running.",
-      );
+      setError(err.message || "Something went wrong. Please try again later.");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(explanation);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col justify-between selection:bg-indigo-500 selection:text-white">
-      <header className="border-b border-slate-800 bg-slate-900/50 backdrop-blur sticky top-0 z-10 px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center space-x-3">
-          <div className="bg-indigo-600 p-2 rounded-xl text-white font-bold shadow-lg shadow-indigo-600/30">
-            📄
-          </div>
-          <div>
-            <h1 className="text-xl font-bold tracking-tight">
-              Research Paper Explainer
-            </h1>
-            <p className="text-xs text-slate-400">
-              Powered by LangChain & Groq AI
-            </p>
-          </div>
+    <div className="app-container">
+      {/* Top Header */}
+      <header className="header">
+        <div className="logo-icon">📄</div>
+        <div className="header-text">
+          <h1>Research Paper Explainer</h1>
+          <p>Powered by LangChain & Groq AI</p>
         </div>
       </header>
 
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
-        <section className="lg:col-span-5 bg-slate-900/60 border border-slate-800 rounded-2xl p-6 shadow-xl backdrop-blur h-fit">
-          <h2 className="text-lg font-semibold mb-4 text-indigo-400 flex items-center gap-2">
-            ⚙️ Configuration
-          </h2>
+      {/* Main Two-Column Layout */}
+      <div className="main-layout">
+        {/* Left Column: Configuration */}
+        <section className="card config-card">
+          <div className="card-header">
+            <span className="icon">⚙️</span>
+            <h2>Configuration</h2>
+          </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1.5">
-                Research Paper Title or Topic
-              </label>
+          <form onSubmit={handleSubmit} className="paper-form">
+            <div className="form-group">
+              <label htmlFor="paper_name">Research Paper Title or Topic</label>
               <input
                 type="text"
-                required
-                maxLength={200}
-                value={paperName}
-                onChange={(e) => setPaperName(e.target.value)}
+                id="paper_name"
+                name="paper_name"
+                value={formData.paper_name}
+                onChange={handleChange}
                 placeholder="e.g., Attention Is All You Need"
-                className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+                maxLength={200}
+                required
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1.5">
-                Technical Depth
-              </label>
+            <div className="form-group">
+              <label htmlFor="tech_depth">Technical Depth</label>
               <select
-                value={techDepth}
-                onChange={(e) => setTechDepth(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+                id="tech_depth"
+                name="tech_depth"
+                value={formData.tech_depth}
+                onChange={handleChange}
               >
-                <option value="Beginner">
+                <option value="Beginner (Simple terms & analogies)">
                   Beginner (Simple terms & analogies)
                 </option>
                 <option value="Intermediate">
-                  Intermediate (Balanced concepts)
+                  Intermediate (Core concepts & logic)
                 </option>
-                <option value="Expert">
-                  Expert (In-depth architecture & math)
+                <option value="Advanced / Expert">
+                  Advanced (Equations & implementation details)
                 </option>
               </select>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1.5">
-                Reading Goal / Style
-              </label>
+            <div className="form-group">
+              <label htmlFor="reading_goal">Reading Goal / Style</label>
               <select
-                value={readingGoal}
-                onChange={(e) => setReadingGoal(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+                id="reading_goal"
+                name="reading_goal"
+                value={formData.reading_goal}
+                onChange={handleChange}
               >
                 <option value="Quick Summary">Quick Summary</option>
-                <option value="Detailed Literature Review">
-                  Detailed Literature Review
+                <option value="General Overview & Key Takeaways">
+                  General Overview & Key Takeaways
                 </option>
-                <option value="Step-by-step Architecture Breakdown">
-                  Step-by-step Architecture Breakdown
+                <option value="Deep Dive into Math & Code Snippets">
+                  Deep Dive into Math & Code Snippets
                 </option>
               </select>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1.5">
-                Explanation Length
-              </label>
+            <div className="form-group">
+              <label htmlFor="length">Explanation Length</label>
               <select
-                value={length}
-                onChange={(e) => setLength(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+                id="length"
+                name="length"
+                value={formData.length}
+                onChange={handleChange}
               >
-                <option value="Short">Short (Concise)</option>
-                <option value="Medium">Medium (Balanced overview)</option>
-                <option value="Long & Comprehensive">
-                  Long & Comprehensive
+                <option value="Short (1 min read)">Short (1 min read)</option>
+                <option value="Medium (Balanced overview)">
+                  Medium (Balanced overview)
+                </option>
+                <option value="Comprehensive Detailed Breakdown">
+                  Comprehensive Detailed Breakdown
                 </option>
               </select>
             </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 disabled:opacity-50 text-white font-medium py-3 rounded-xl shadow-lg shadow-indigo-600/30 transition duration-200 flex items-center justify-center gap-2 cursor-pointer"
-            >
-              {loading ? (
-                <>
-                  <svg
-                    className="animate-spin h-5 w-5 text-white"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
-                  </svg>
-                  Analyzing Paper...
-                </>
-              ) : (
-                "Generate Explanation"
-              )}
+            <button type="submit" className="submit-btn" disabled={loading}>
+              {loading ? "Generating Explanation..." : "Generate Explanation"}
             </button>
           </form>
         </section>
 
-        <section className="lg:col-span-7 bg-slate-900/60 border border-slate-800 rounded-2xl p-6 shadow-xl backdrop-blur flex flex-col">
-          <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-800">
-            <h2 className="text-lg font-semibold text-indigo-400 flex items-center gap-2">
-              📝 Explanation Output
-            </h2>
-            {explanation && (
-              <button
-                onClick={handleCopy}
-                className="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg transition border border-slate-700 cursor-pointer"
-              >
-                {copied ? "Copied! ✨" : "Copy Output"}
-              </button>
-            )}
+        {/* Right Column: Explanation Output */}
+        <section className="card output-card">
+          <div className="card-header">
+            <span className="icon">📝</span>
+            <h2>Explanation Output</h2>
           </div>
 
-          <div className="flex-1 min-h-[400px] max-h-[600px] overflow-y-auto rounded-xl bg-slate-950 p-5 border border-slate-800/80">
-            {error && (
-              <div className="bg-red-950/50 border border-red-800 text-red-200 p-4 rounded-xl text-sm">
-                <span className="font-semibold">Error:</span> {error}
-              </div>
-            )}
+          <div className="output-body">
+            {error && <div className="error-box">⚠️ {error}</div>}
 
-            {loading && (
-              <div className="h-full flex flex-col items-center justify-center space-y-3 text-slate-400 py-20">
-                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-500"></div>
-                <p className="text-sm">
-                  Synthesizing mathematical formulas & analogies...
-                </p>
+            {loading ? (
+              <div className="placeholder-content">
+                <div className="spinner"></div>
+                <p>Analyzing research paper and generating insights...</p>
               </div>
-            )}
-
-            {!loading && !error && !explanation && (
-              <div className="h-full flex flex-col items-center justify-center text-center text-slate-500 py-20">
-                <div className="text-4xl mb-2">🔭</div>
-                <p className="text-sm">
+            ) : explanation ? (
+              <div className="explanation-content">
+                <div className="explanation-text">{explanation}</div>
+              </div>
+            ) : (
+              <div className="placeholder-content">
+                <div className="telescope-icon">🔭</div>
+                <p>
                   Configure your preferences on the left and click <br />
-                  "Generate Explanation" to get started.
+                  &quot;Generate Explanation&quot; to get started.
                 </p>
-              </div>
-            )}
-
-            {!loading && explanation && (
-              <div className="prose prose-invert max-w-none text-slate-300 text-sm leading-relaxed whitespace-pre-wrap font-sans">
-                {explanation}
               </div>
             )}
           </div>
         </section>
-      </main>
-
-      <footer className="border-t border-slate-800 py-4 text-center text-xs text-slate-500">
-        Research Paper Explainer • Built with FastAPI, React, & LangChain
-      </footer>
+      </div>
     </div>
   );
 }
-
-export default App;
