@@ -11,8 +11,9 @@
 - 🎯 **Reading Goals:** Select custom goals like Quick Summaries, Literature Reviews, or Architecture Breakdowns.
 - 📏 **Adjustable Length:** Customize the length of the explanation.
 - 💻 **Mathematical Insights & Analogies:** Get intuitive code snippets and relatable analogies for complex concepts.
+- 🎨 **Responsive Two-Column Dark Theme UI:** Sleek, modern two-column layout built with Tailwind CSS, featuring fixed-height scrollable output and custom input autofill protection.
 - 🛡️ **Hardened Security & Rate Limiting:** Proxy-aware IP rate limiting (`SlowAPI`), strict Pydantic input bounds, prompt injection defenses, and sanitized internal error logging.
-- ⚡ **Modern Split Architecture:** Built with a high-performance FastAPI backend and a responsive React + Custom CSS frontend.
+- ⚡ **Modern Split Architecture:** Built with a high-performance FastAPI backend and a fast, responsive React + Tailwind CSS v4 frontend.
 - 🐳 **Containerized Deployment:** Fully dockerized setup using Docker Compose for seamless deployment.
 
 ---
@@ -20,7 +21,7 @@
 ## 🛠️ Tech Stack
 
 - **Backend:** Python, FastAPI, `uv`, LangChain, LangChain-Groq, Pydantic, SlowAPI, Uvicorn
-- **Frontend:** React (Vite), Tailwind / Pure CSS, Nginx
+- **Frontend:** React (Vite), Tailwind CSS v4 (`@tailwindcss/vite`), Nginx
 - **Containerization:** Docker, Docker Compose
 - **AI Model:** Groq API (`openai/gpt-oss-120b` via `ChatGroq`)
 
@@ -89,7 +90,7 @@ uv pip install slowapi
 uv run uvicorn src.backend.app.main:app --reload --port 8000
 ```
 
-### Frontend Setup (Vite / React)
+### Frontend Setup (Vite / React + Tailwind CSS v4)
 
 ```bash
 cd frontend
@@ -101,13 +102,15 @@ npm run dev
 
 ---
 
-## 🔒 Security Measures Applied
+## 🔒 Security & UX Enhancements Applied
 
 - **CORS Restricted:** Explicit origin whitelisting (`http://localhost:5173`) replacing wildcards.
 - **Prompt Injection Defense:** Input isolation using structured `ChatPromptTemplate` with separate system and user roles.
 - **Input Bounds:** Pydantic `Field(max_length=...)` validation on payload strings.
 - **Rate Limiting:** IP-based limit (5 req/min) reading `X-Forwarded-For` for reverse-proxy compatibility.
 - **Sanitized Errors:** Internal exception logging while returning generic status codes to prevent data leaks.
+- **Autofill Protection:** Custom WebKit autofill styling rules preventing browser defaults from overriding the dark theme on input paste.
+- **Constrained Layout:** Scrollable output viewport restricting expansion when detailed explanations are generated.
 
 ---
 

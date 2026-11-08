@@ -95,7 +95,7 @@ export default function App() {
                 placeholder="e.g., Attention Is All You Need"
                 maxLength={200}
                 required
-                className="w-full px-3.5 py-3 rounded-lg border border-[#2a3447] bg-[#0b0f17] text-gray-100 text-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 placeholder-gray-600 transition-all"
+                className="w-full px-3.5 py-3 rounded-lg border border-[#2a3447] bg-[#0b0f17] text-gray-100 text-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 placeholder-gray-600 transition-all autofill:bg-[#0b0f17] autofill:text-gray-100 [&:-webkit-autofill]:bg-[#0b0f17] [&:-webkit-autofill]:text-gray-100 [&:-webkit-autofill]:[-webkit-text-fill-color:#f3f4f6] [&:-webkit-autofill]:[box-shadow:0_0_0_1000px_#0b0f17_inset]"
               />
             </div>
 
@@ -184,17 +184,17 @@ export default function App() {
         </section>
 
         {/* Right Column: Explanation Output */}
-        <section className="bg-[#121824] border border-slate-800 rounded-xl p-6 shadow-2xl min-h-130 flex flex-col">
-          <div className="flex items-center gap-2.5 mb-6">
+        <section className="bg-[#121824] border border-slate-800 rounded-xl p-6 shadow-2xl h-150 flex flex-col">
+          <div className="flex items-center gap-2.5 mb-6 shrink-0">
             <span className="text-lg">📝</span>
             <h2 className="text-lg font-semibold text-indigo-400">
               Explanation Output
             </h2>
           </div>
 
-          <div className="flex-1 flex flex-col bg-[#0b0f17] border border-[#1a2234] rounded-lg p-8 relative">
+          <div className="flex-1 flex flex-col bg-[#0b0f17] border border-[#1a2234] rounded-lg p-6 relative overflow-hidden">
             {error && (
-              <div className="p-4 mb-4 bg-red-950/40 border border-red-800 text-red-200 rounded-lg text-sm">
+              <div className="p-4 mb-4 bg-red-950/40 border border-red-800 text-red-200 rounded-lg text-sm shrink-0">
                 ⚠️ {error}
               </div>
             )}
@@ -207,7 +207,7 @@ export default function App() {
                 </p>
               </div>
             ) : explanation ? (
-              <div className="flex-1 overflow-y-auto">
+              <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
                 <div className="text-gray-200 text-sm leading-relaxed whitespace-pre-wrap">
                   {explanation}
                 </div>

@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
 body {
-  @apply bg-[#0d111a] text-gray-100 min-h-screen antialiased;
+  background-color: #0d111a;
+  color: #f3f4f6;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
