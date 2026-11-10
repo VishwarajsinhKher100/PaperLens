@@ -1,8 +1,18 @@
 # 📚 PaperLens – AI-Powered Research Paper Explainer
 
-> PaperLens is an AI-powered web application that generates concise, meaningful explanations and architectural breakdowns of research papers — tailored by paper title, technical depth, explanation style, and reading goal.
+An AI-powered research paper explainer that transforms complex academic literature into clear, customized breakdowns tailored to your technical depth and reading goals.
 
----
+## 📖 Overview
+
+**PaperLens** is an intelligent web application designed to help researchers, students, and developers digest complex academic papers with ease. By leveraging Large Language Models, PaperLens takes a research paper title and transforms it into tailored explanations—ranging from beginner-friendly analogies and mathematical breakdowns to production-ready code implementations.
+
+Whether you need a high-level 2-minute overview for a literature review or a deep architectural breakdown to understand underlying algorithms, PaperLens adapts output length, technical complexity, and specific reading goals to fit your workflow.
+
+### Key Highlights
+- **Smart Generation:** Input just a paper title to receive structured summaries, math insights, and intuitive code snippets.
+- **Customizable Depth & Goals:** Tailor responses dynamically across Beginner, Intermediate, and Expert technical levels.
+- **Enterprise-Grade Security:** Hardened backend with Argon2 password hashing, JWT authentication, rate limiting, and strict input validation.
+- **Modern UI & Persistence:** Dark-themed, responsive split-screen UI paired with PostgreSQL storage for seamless bookmarking and history tracking.
 
 ## 🚀 Features
 
@@ -12,7 +22,9 @@
 - 📏 **Adjustable Length:** Customize the length of the explanation.
 - 💻 **Mathematical Insights & Analogies:** Get intuitive code snippets and relatable analogies for complex concepts.
 - 🎨 **Responsive Two-Column Dark Theme UI:** Sleek, modern two-column layout built with Tailwind CSS, featuring fixed-height scrollable output and custom input autofill protection.
-- 🛡️ **Hardened Security & Rate Limiting:** Proxy-aware IP rate limiting (`SlowAPI`), strict Pydantic input bounds, prompt injection defenses, and sanitized internal error logging.
+- 🔐 **User Authentication:** Full JWT token authentication with Argon2 password hashing and frontend validation rules.
+- 🗄️ **User Saved History & Bookmarking:** Save generated paper explanations and key insights directly into a PostgreSQL database.
+- 🛡️ **Hardened Security & Rate Limiting:** Proxy-aware IP rate limiting (`SlowAPI`), strict Pydantic input bounds, prompt injection defenses, password complexity enforcement, and sanitized internal error logging.
 - ⚡ **Modern Split Architecture:** Built with a high-performance FastAPI backend and a fast, responsive React + Tailwind CSS v4 frontend.
 - 🐳 **Containerized Deployment:** Fully dockerized setup using Docker Compose for seamless deployment.
 
@@ -20,8 +32,9 @@
 
 ## 🛠️ Tech Stack
 
-- **Backend:** Python, FastAPI, `uv`, LangChain, LangChain-Groq, Pydantic, SlowAPI, Uvicorn
+- **Backend:** Python, FastAPI, SQLAlchemy, PostgreSQL, `uv`, LangChain, LangChain-Groq, Pydantic, SlowAPI, Uvicorn, Argon2, PyJWT (`python-jose`)
 - **Frontend:** React (Vite), Tailwind CSS v4 (`@tailwindcss/vite`), Nginx
+- **Database:** PostgreSQL
 - **Containerization:** Docker, Docker Compose
 - **AI Model:** Groq API (`openai/gpt-oss-120b` via `ChatGroq`)
 
@@ -30,11 +43,17 @@
 ## ⚙️ Environment Variables
 
 ### Root Directory (`.env`)
-Create a `.env` file in the **root directory** of the project and add your Groq API key:
+Create a `.env` file in the **root directory** of the project and add your Groq API key, JWT Secret Key, and PostgreSQL connection string:
 
 ```env
 # AI Provider API Keys
 GROQ_API_KEY=your_groq_api_key_here
+
+# JWT Authentication Secret Key
+SECRET_KEY=your_secure_random_secret_key_here
+
+# PostgreSQL Database Connection URL
+DATABASE_URL=postgresql://postgres:your_password@localhost:5432/research_explainer
 ```
 
 ### Frontend Directory (`frontend/.env`)
@@ -48,7 +67,7 @@ VITE_API_URL=http://localhost:8000
 
 ## 🐳 Running with Docker (Recommended)
 
-The easiest way to run the entire application (both Frontend and Backend) is using Docker Compose.
+The easiest way to run the entire application (Frontend, Backend, and PostgreSQL database) is using Docker Compose.
 
 ### 1️⃣ Clone the Repository
 
@@ -78,15 +97,23 @@ docker compose down
 
 ## 💻 Local Development Setup
 
-If you prefer running the backend and frontend separately without Docker:
+If you prefer running the backend, database, and frontend separately without Docker:
+
+### Database Setup
+
+Ensure PostgreSQL is running locally and create the database:
+
+```sql
+CREATE DATABASE research_explainer;
+```
 
 ### Backend Setup (`uv`)
 
 ```bash
 cd backend
 uv sync
-# Install security and rate limiting package if not present
-uv pip install slowapi
+# Install required dependencies
+uv pip install psycopg2-binary sqlalchemy slowapi argon2-cffi python-jose python-multipart
 uv run uvicorn src.backend.app.main:app --reload --port 8000
 ```
 
@@ -104,6 +131,10 @@ npm run dev
 
 ## 🔒 Security & UX Enhancements Applied
 
+- **JWT & Argon2 Authentication:** Password hashing using Argon2 with JWT token generation and storage.
+- **Password Complexity Validation:** Enforcement of minimum length (8 characters) and mandatory numeric character rules on registration via Pydantic validators.
+- **Strict Secret Key Requirement:** Application fails startup if `SECRET_KEY` environment variable is not defined.
+- **PostgreSQL Database Storage:** ORM management for user accounts, search history, and bookmarked insights.
 - **CORS Restricted:** Explicit origin whitelisting (`http://localhost:5173`) replacing wildcards.
 - **Prompt Injection Defense:** Input isolation using structured `ChatPromptTemplate` with separate system and user roles.
 - **Input Bounds:** Pydantic `Field(max_length=...)` validation on payload strings.
@@ -121,4 +152,3 @@ npm run dev
 - 📊 **LaTeX Math Rendering:** Add KaTeX or MathJax rendering on the frontend for crisp, readable math formulas.
 - 📜 **Export Capabilities:** Export generated summaries and breakdowns directly as PDF or Markdown files.
 - 🔍 **ArXiv & Semantic Scholar API Integration:** Automatically fetch paper metadata, citations, abstracts, and authors via direct API connections.
-- 🔐 **User Authentication & Saved History:** Allow users to save past paper explanations and bookmark key insights.
